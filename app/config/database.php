@@ -1,4 +1,5 @@
 
+
 <?php
 // Configuração da conexão com o banco de dados
 $hostname = 'localhost';

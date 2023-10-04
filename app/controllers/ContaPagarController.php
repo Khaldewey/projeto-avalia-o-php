@@ -23,7 +23,7 @@ class ContaPagarController {
 
         $empresaNomes = [];
     
-    // Busque os nomes das empresas de uma só vez
+    
         foreach ($dadosContasPagar as $conta) {
             $id_empresa = $conta['id_empresa'];
             if (!isset($empresaNomes[$id_empresa])) {
@@ -37,63 +37,79 @@ class ContaPagarController {
     } 
 
 
-   public function renderizarTabelaFiltrada() {
-    // Recupere os parâmetros de filtro da solicitação GET
-    $empresa = $_GET['empresa'] ?? '';
-    $operador = $_GET['operador'] ?? '';
-    $valor = $_GET['valor'] ?? '';
-    $data_pagar = $_GET['data_pagar'] ?? '';
-
-    // Construa a consulta SQL com base nos filtros
-    $sql = "SELECT * FROM tbl_conta_pagar WHERE 1=1";
-
-    if (!empty($empresa)) {
-        // Adicione o filtro por nome da empresa
-        $sql .= " AND id_empresa = ?";
-    }
-
-    if (!empty($valor) && is_numeric($valor)) {
-        // Adicione o filtro por valor a pagar com base no operador selecionado
-        if ($operador == 'maior') {
-            $sql .= " AND valor > ?";
-        } elseif ($operador == 'menor') {
-            $sql .= " AND valor < ?";
-        } elseif ($operador == 'igual') {
-            $sql .= " AND valor = ?";
+    public function renderizarTabelaFiltrada() {
+        require_once './app/views/filtro.php';
+        if ($_SERVER["REQUEST_METHOD"] == "GET") {
+            $empresa = $_GET['empresa'] ?? '';
+            $operador = $_GET['operador'] ?? '';
+            $valor = $_GET['valor'] ?? '';
+            $data_pagar = $_GET['data_pagar'] ?? '';
+            
+            
+            $sql = "SELECT cp.*
+                    FROM tbl_conta_pagar cp
+                    INNER JOIN tbl_empresa e ON cp.id_empresa = e.id_empresa";
+            
+            $whereConditions = []; 
+            $params = [];
+            
+            if (!empty($empresa)) {
+                
+                $whereConditions[] = "e.nome LIKE ?";
+                $params[] = "%$empresa%";
+            }
+        
+            if (!empty($valor) && is_numeric($valor)) {
+               
+                if ($operador == 'maior') {
+                    $whereConditions[] = "cp.valor > ?";
+                } elseif ($operador == 'menor') {
+                    $whereConditions[] = "cp.valor < ?";
+                } elseif ($operador == 'igual') {
+                    $whereConditions[] = "cp.valor = ?";
+                }
+                $params[] = $valor;
+            }
+        
+            if (!empty($data_pagar)) {
+                
+                $whereConditions[] = "cp.data_pagar = ?";
+                $params[] = $data_pagar;
+            }
+        
+            
+            if (!empty($whereConditions)) {
+                $sql .= " WHERE " . implode(" AND ", $whereConditions);
+            }
+            
+            
+            $stmt = $this->pdo->prepare($sql);
+        
+           
+            $stmt->execute($params);
+        
+            
+            $dadosContasFiltrados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        
+            
+            $empresaNomes = [];
+        
+            
+            foreach ($dadosContasFiltrados as $conta) {
+                $id_empresa = $conta['id_empresa'];
+                if (!isset($empresaNomes[$id_empresa])) {
+                    $nomeEmpresa = $this->empresaModel->buscarNomeEmpresaPorId($id_empresa);
+                    $empresaNomes[$id_empresa] = $nomeEmpresa;
+                }
+            }
+        
+           
+            require_once './app/views/filtro-table.php';
+            return $dadosContasFiltrados;
         }
+        
+    
     }
-
-    if (!empty($data_pagar)) {
-        // Adicione o filtro por data de pagamento
-        $sql .= " AND data_pagar = ?";
-    }
-
-    // Prepare a consulta SQL
-    $stmt = $this->pdo->prepare($sql);
-
-    // Associe os valores dos filtros aos parâmetros da consulta
-    $params = [];
-    if (!empty($empresa)) {
-        $params[] = $empresa;
-    }
-    if (!empty($valor) && is_numeric($valor)) {
-        $params[] = $valor;
-    }
-    if (!empty($data_pagar)) {
-        $params[] = $data_pagar;
-    }
-
-    // Execute a consulta SQL com base nos filtros
-    $stmt->execute($params);
-
-    // Recupere os resultados da consulta
-    $dadosContasFiltradas = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-    // Renderize a tabela com os resultados filtrados
-    foreach ($dadosContasFiltradas as $conta) {
-        // Renderize as linhas da tabela aqui...
-    }
-}  
     
 
 

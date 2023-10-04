@@ -42,12 +42,12 @@ class ContaPagar {
             $stmt = $this->pdo->prepare($query);
             $stmt->execute();
 
-            // FetchAll retorna todos os resultados em um array associativo
+            
             $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             return $resultados;
         } catch (PDOException $e) {
-            // Lide com erros de consulta aqui
+            
             return [];
         }
     }
@@ -61,7 +61,7 @@ class ContaPagar {
 
             return $stmt->fetch(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            // Lide com erros de consulta aqui
+            
             return null;
         }
     } 
@@ -74,12 +74,12 @@ class ContaPagar {
             $stmt = $this->pdo->prepare($query);
             $stmt->execute([$this->getId()]);
             
-            // Outras ações de limpeza ou manipulação após a exclusão, se necessário
             
-            return true; // Indica que a exclusão foi bem-sucedida
+            
+            return true; 
         } catch (PDOException $e) {
-            // Lide com erros de exclusão aqui
-            return false; // Indica que a exclusão falhou
+            
+            return false; 
         }
     }
 
