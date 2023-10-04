@@ -8,13 +8,27 @@ class ContaPagarController {
 
     private $pdo; 
     private $empresaModel;
-    private $contaPagar;
+    private $contaPagar; 
+    
 
     public function __construct($pdo) {
         $this->pdo = $pdo;
         $this->empresaModel = new EmpresaModel($this->pdo);
-        $this->contaPagar = new ContaPagar();
+        $this->contaPagar = new ContaPagar($this->pdo);
     } 
+
+    public function buscarDadosContas(){
+       
+        $dadosContasPagar = $this->contaPagar->buscarDadosContasPagar(); 
+
+        foreach ($dadosContasPagar as &$conta) {
+        $nomeEmpresa = $this->empresaModel->buscarNomeEmpresaPorId($conta['id_empresa']);
+        
+        $conta['nome_empresa'] = $nomeEmpresa;
+        }
+        
+        require_once './app/views/pagamentos.php';
+    }
 
     public function adicionarContaPagar() {
         $empresas = $this->empresaModel->listarEmpresas(); // Implemente o método listarEmpresas no modelo
@@ -33,7 +47,7 @@ class ContaPagarController {
             $this->contaPagar->setValor($valor);
 
             // Chame o método para adicionar a conta a pagar no banco de dados
-            $this->contaPagar->adicionarConta();
+            $this->contaPagar->adicionarConta($this->pdo);
 
             // Redirecione para a página de sucesso ou exiba uma mensagem
             header("Location: sucesso.php");
