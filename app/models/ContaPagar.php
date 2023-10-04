@@ -13,7 +13,7 @@ class ContaPagar {
 
     public function adicionarConta($pdo) {
         try {
-            $query = "INSERT INTO contas_pagar (id_empresa, data_pagar, valor) VALUES (?, ?, ?)";
+            $query = "INSERT INTO tbl_conta_pagar (id_empresa, data_pagar, valor) VALUES (?, ?, ?)";
             $stmt = $pdo->prepare($query);
             $stmt->execute([$this->id_empresa, $this->data_pagar, $this->valor]);
             return true;
@@ -21,11 +21,11 @@ class ContaPagar {
             return false;
         }
     } 
-
     public function buscarDadosContasPagar() {
         try {
             $query = "SELECT * FROM tbl_conta_pagar";
-            $stmt = $this->pdo->query($query);
+            $stmt = $this->pdo->prepare($query);
+            $stmt->execute();
 
             // FetchAll retorna todos os resultados em um array associativo
             $resultados = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -36,7 +36,6 @@ class ContaPagar {
             return [];
         }
     }
-
     public function getId() {
         return $this->id;
     }

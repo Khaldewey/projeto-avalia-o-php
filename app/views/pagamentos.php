@@ -13,7 +13,7 @@
         <?php foreach ($dadosContasPagar as $conta): ?>
             <tr>
                 <td><?= $conta['id_conta_pagar']; ?></td>
-                <td><?= $conta['nome_empresa']; ?></td>
+                <td><?= $empresaNomes[$conta['id_empresa']]; ?></td>
                 <td><?= $conta['data_pagar']; ?></td>
                 <td>R$ <?= number_format($conta['valor'], 2, ',', '.'); ?></td>
                 <td>

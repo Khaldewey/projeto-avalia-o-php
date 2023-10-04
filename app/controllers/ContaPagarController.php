@@ -21,40 +21,45 @@ class ContaPagarController {
        
         $dadosContasPagar = $this->contaPagar->buscarDadosContasPagar(); 
 
-        foreach ($dadosContasPagar as &$conta) {
-        $nomeEmpresa = $this->empresaModel->buscarNomeEmpresaPorId($conta['id_empresa']);
-        
-        $conta['nome_empresa'] = $nomeEmpresa;
+        $empresaNomes = [];
+    
+    // Busque os nomes das empresas de uma só vez
+        foreach ($dadosContasPagar as $conta) {
+            $id_empresa = $conta['id_empresa'];
+            if (!isset($empresaNomes[$id_empresa])) {
+                $nomeEmpresa = $this->empresaModel->buscarNomeEmpresaPorId($id_empresa);
+                $empresaNomes[$id_empresa] = $nomeEmpresa;
+            }
         }
+    
         
         require_once './app/views/pagamentos.php';
     }
 
     public function adicionarContaPagar() {
-        $empresas = $this->empresaModel->listarEmpresas(); // Implemente o método listarEmpresas no modelo
+        $empresas = $this->empresaModel->listarEmpresas(); 
 
         if ($_SERVER["REQUEST_METHOD"] == "POST") {
-            // Recupere os valores do formulário
+            
             $id_empresa = $_POST["id_empresa"];
             $data_pagar = $_POST["data_pagar"];
             $valor = $_POST["valor"];
 
-            // Valide e limpe os dados (implemente validações apropriadas)
+            
 
-            // Crie uma instância do modelo ContaPagar
+            
             $this->contaPagar->setIdEmpresa($id_empresa);
             $this->contaPagar->setDataPagar($data_pagar);
             $this->contaPagar->setValor($valor);
 
-            // Chame o método para adicionar a conta a pagar no banco de dados
+            
             $this->contaPagar->adicionarConta($this->pdo);
 
-            // Redirecione para a página de sucesso ou exiba uma mensagem
-            header("Location: sucesso.php");
+            header("Location: index.php");
             exit();
         }
 
-        // Carregue a visualização para o formulário de adição
+      
         require_once './app/views/add-conta-pagar.php';
     }
 }
