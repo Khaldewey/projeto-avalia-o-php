@@ -21,7 +21,7 @@
         <input type="number" name="valor" id="valor" step="0.01" required>
 
         <!-- Botão para inserir a conta a pagar -->
-        <input type="submit" value="Inserir Conta">
+        <input type="submit" value="Inserir/Editar">
 </form> 
 
 

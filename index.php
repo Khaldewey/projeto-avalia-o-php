@@ -18,11 +18,17 @@ $action1 = $_GET['action1'] ?? 'listar';
 
 switch ($action1) {
     case 'visualizar':
-        $controller->buscarDadosContas();
+        if (isset($_GET['empresa']) || isset($_GET['valor']) || isset($_GET['data_pagar'])) {
+            $controller->renderizarTabelaFiltrada();
+        } else {
+            $controller->buscarDadosContas();
+        }
         break;
     
     // Outros casos aqui
-}
+} 
+
+
 ?>
 
 <!DOCTYPE html>
@@ -41,7 +47,9 @@ switch ($action1) {
 <form method="GET" action1="index.php">
     <input type="hidden" name="action1" value="visualizar"> 
     <input type="submit" value="Visualizar Pagamentos"> 
-</form>
+</form> 
+
+
  
 </body>
 </html>
