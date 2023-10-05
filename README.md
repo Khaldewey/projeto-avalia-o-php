@@ -1,3 +1,13 @@
+# Aviso importante
+É importante salvar o diretório com este nome **test-titan** para que as urls presentes nos '/controllers/marcar_como_paga.php' '/controllers/excluir_conta.php'  funcionem corretamente, o comportamento almejado com essa implementação é recarregar a página quando as alterações nos valores forem atribuídas. 
+
+Exemplo: 
+
+// Redirecione para a página de listagem de contas
+        
+        header("Location: http://localhost/test-titan/index.php?action1=visualizar");
+        
+        exit();
 # Avaliação PHP Titan Software
 
 Este projeto é parte da avaliação de habilidades em PHP para a Titan Software.
@@ -6,4 +16,3 @@ Este projeto é parte da avaliação de habilidades em PHP para a Titan Software
 
 * **Israel Alves** - [Meu Perfil no GitHub](https://github.com/Khaldewey)
 
-Sinta-se à vontade para personalizar o texto conforme necessário, incluindo o seu nome de usuário do GitHub e um link para o seu perfil, caso deseje vincular o seu nome à sua página no GitHub
