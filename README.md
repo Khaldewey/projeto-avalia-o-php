@@ -9,9 +9,6 @@ Exemplo:
         header("Location: http://localhost/test-titan/index.php?action1=visualizar");
         
         exit();
-# Avaliação PHP Titan Software
-
-Este projeto é parte da avaliação de habilidades em PHP para a Titan Software.
 
 ## Autor
 
